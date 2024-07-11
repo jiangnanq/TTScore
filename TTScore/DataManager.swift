@@ -70,6 +70,11 @@ class Player: Comparable, Equatable {
     var lose: Int
     var winSub: Int
     var loseSub: Int
+    var totalMatch: Int {
+        get {
+            win + lose
+        }
+    }
     var description: String {
         get {
             if winSub == 0 && loseSub == 0 {return ""}
@@ -87,7 +92,7 @@ class Player: Comparable, Equatable {
     
     func updateScore(match: Match) {
         guard !match.winner.isEmpty && (match.player1 == playerName || match.player2 == playerName)  else {
-           return
+            return
         }
         if match.winner == playerName {win += 1} else { lose += 1}
         if match.player1 == playerName {
@@ -104,6 +109,7 @@ class Player: Comparable, Equatable {
     }
     
     static func < (lhs: Player, rhs:Player) -> Bool {
+        if lhs.totalMatch != rhs.totalMatch { return lhs.totalMatch < rhs.totalMatch}
         if lhs.win != rhs.win {return lhs.win < rhs.win}
         if lhs.winPoints != rhs.winPoints { return (lhs.winPoints < rhs.winPoints)}
         return lhs.playerName < rhs.playerName
@@ -141,7 +147,7 @@ class DataManager: ObservableObject{
     }
     
     func reloadScore() {
-         for onematch in matches {
+        for onematch in matches {
             for oneplayer in players {
                 oneplayer.updateScore(match: onematch)
             }
